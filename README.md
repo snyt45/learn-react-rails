@@ -11,6 +11,7 @@
 cd api
 docker compose build
 docker compose run --rm api bundle install
+docker compose run --rm api rails db:create
 docker compose up
 ```
 
