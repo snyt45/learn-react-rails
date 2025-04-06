@@ -6,12 +6,12 @@ const fetchData = async () => {
   console.log(response);
 };
 
-const ApiTestView: React.FC = () => {
+const ApiTest: React.FC = () => {
   useEffect(() => {
     fetchData();
   }, []);
 
-  return <div>test</div>;
+  return <div>api test</div>;
 };
 
-export default ApiTestView;
+export default ApiTest;

@@ -1,7 +1,7 @@
-import ApiTestView from "./views/ApiTestView";
+import AppRouter from "./components/router/AppRouter";
 
 function App() {
-  return <ApiTestView />;
+  return <AppRouter />;
 }
 
 export default App;
