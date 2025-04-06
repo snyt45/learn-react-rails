@@ -1,17 +1,10 @@
-import React, { useEffect } from "react";
-import { hello } from "../lib/api/v1/hello";
-
-const fetchData = async () => {
-  const response = await hello();
-  console.log(response);
-};
+import React from "react";
+import { useHelloContext } from "../lib/context/HelloContext";
 
 const ApiTest: React.FC = () => {
-  useEffect(() => {
-    fetchData();
-  }, []);
+  const { message } = useHelloContext();
 
-  return <div>api test</div>;
+  return <div>api test: {message}</div>;
 };
 
 export default ApiTest;
