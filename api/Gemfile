@@ -5,3 +5,7 @@ gem 'rails', '7.1.4.1'
 gem "bootsnap", require: false
 gem "puma", ">= 5.0"
 gem 'pg'
+
+group :development, :test do
+  gem "rspec-rails"
+end
