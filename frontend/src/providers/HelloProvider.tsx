@@ -18,8 +18,8 @@ export const HelloProvider: React.FC<{ children: ReactNode }> = ({
 }) => {
   const [message, setMessage] = useState<string>("");
   const fetchMessage = async () => {
-    const response = await hello();
-    setMessage(response.message);
+    const data = await hello();
+    setMessage(data.message);
   };
 
   useEffect(() => {

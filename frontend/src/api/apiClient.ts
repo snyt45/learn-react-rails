@@ -1,54 +1,100 @@
-import axios, { AxiosResponse } from "axios";
+import axios, { AxiosInstance, AxiosError } from 'axios';
+import { InternalServerException, InValidServiceException, UnAuthorizedException, UnprocessableException } from "./exception";
 
-interface ApiRequestOptions {
-  method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
-  url: string;
-  data?: any;
-  params?: any;
+export interface HttpClient {
+  get<T = any>(url: string, params?: any): Promise<T>;
+  post<T = any>(url: string, data?: any): Promise<T>;
+  put<T = any>(url: string, data?: any): Promise<T>;
+  patch<T = any>(url: string, data?: any): Promise<T>;
+  delete<T = any>(url: string, params?: any): Promise<T>;
 }
 
-const API_BASE_URL = process.env.REACT_APP_API_URL;
+export interface ApiClientOptions {
+  baseURL: string;
+  timeout?: number;
+  headers?: Record<string, string>;
+}
 
-const apiClient = async (
-  options: ApiRequestOptions
-): Promise<AxiosResponse> => {
-  const { method, url, data, params } = options;
+export class ApiClient implements HttpClient {
+  private client: AxiosInstance;
 
-  const client = axios.create({
-    baseURL: API_BASE_URL,
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
+  constructor(options: ApiClientOptions) {
+    this.client = axios.create({
+      baseURL: options.baseURL,
+      timeout: options.timeout || 10000,
+      headers: {
+        'Content-Type': 'application/json',
+        ...options.headers,
+      },
+    });
 
-  try {
-    let respose;
-
-    switch (method) {
-      case "GET":
-        respose = await client.get(url, { params });
-        break;
-      case "POST":
-        respose = await client.post(url, data);
-        break;
-      case "PUT":
-        respose = await client.put(url, data);
-        break;
-      case "PATCH":
-        respose = await client.patch(url, data);
-        break;
-      case "DELETE":
-        respose = await client.delete(url, { data, params });
-        break;
-      default:
-        throw new Error("Invalid HTTP method");
-    }
-
-    return respose;
-  } catch (error) {
-    console.log(error);
-    throw error;
+    this.addErrorHandlingInterceptors();
   }
+
+  private addErrorHandlingInterceptors = () => {
+    this.client.interceptors.response.use(
+      response => response,
+      async (error: AxiosError) => {
+        if (error.response) {
+          const { status } = error.response;
+          const data = error.response.data as any;
+          const message = data?.message || 'Unknown error';
+
+          if (status === 400) {
+            throw new InValidServiceException(data, message);
+          } else if (status === 401) {
+            throw new UnAuthorizedException(data, message);
+          } else if (status === 422) {
+            throw new UnprocessableException(data, message);
+          } else if (status === 500) {
+            throw new InternalServerException(data, message);
+          }
+        }
+        throw new Error('Unknown network error');
+      }
+    );
+  };
+
+  public async get<T = any>(url: string, params?: any): Promise<T> {
+    const response = await this.client.get<T>(url, { params });
+    return response.data;
+  }
+
+  public async post<T = any>(url: string, data?: any): Promise<T> {
+    const response = await this.client.post<T>(url, data);
+    return response.data;
+  }
+
+  public async put<T = any>(url: string, data?: any): Promise<T> {
+    const response = await this.client.put<T>(url, data);
+    return response.data;
+  }
+
+  public async patch<T = any>(url: string, data?: any): Promise<T> {
+    const response = await this.client.patch<T>(url, data);
+    return response.data;
+  }
+
+  public async delete<T = any>(url: string, params?: any): Promise<T> {
+    const response = await this.client.delete<T>(url, { params });
+    return response.data;
+  }
+
+  public getAxiosInstance(): AxiosInstance {
+    return this.client;
+  }
+}
+
+export const createApiClient = (options: ApiClientOptions): ApiClient => {
+  return new ApiClient(options);
 };
 
-export default apiClient;
+const API_BASE_URL = process.env.REACT_APP_BASE_URL
+
+export const api = createApiClient({
+  baseURL: `${API_BASE_URL}/api/v1`,
+});
+
+export const baseApi = createApiClient({
+  baseURL: `${API_BASE_URL}`,
+});
