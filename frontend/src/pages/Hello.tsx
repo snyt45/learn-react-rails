@@ -4,7 +4,7 @@ import { useHello } from "../lib/provider/HelloProvider";
 const ApiTest: React.FC = () => {
   const { message } = useHello();
 
-  return <div>api test: {message}</div>;
+  return <div>{message}</div>;
 };
 
 export default ApiTest;
