@@ -1,5 +1,5 @@
 import AppRouter from "./components/router/AppRouter";
-import { HelloProvider } from "./lib/provider/HelloContext";
+import { HelloProvider } from "./lib/provider/HelloProvider";
 
 function App() {
   return (
