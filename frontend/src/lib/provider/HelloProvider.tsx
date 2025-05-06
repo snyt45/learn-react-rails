@@ -33,10 +33,12 @@ export const HelloProvider: React.FC<{ children: ReactNode }> = ({
   );
 };
 
-export const useHelloContext = () => {
+export const useHello = () => {
   const context = useContext(HelloContext);
+
   if (!context) {
     throw new Error("useHelloContext must be used within a HelloProvider");
   }
+
   return context;
 };

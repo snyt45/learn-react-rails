@@ -1,8 +1,8 @@
 import React from "react";
-import { useHelloContext } from "../lib/provider/HelloProvider";
+import { useHello } from "../lib/provider/HelloProvider";
 
 const ApiTest: React.FC = () => {
-  const { message } = useHelloContext();
+  const { message } = useHello();
 
   return <div>api test: {message}</div>;
 };
