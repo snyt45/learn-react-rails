@@ -1,11 +1,12 @@
-import AppRouter from "./components/router/AppRouter";
-import { HelloProvider } from "./lib/provider/HelloProvider";
+import { Routes, Route } from "react-router-dom";
+import Hello from "./pages/Hello";
 
 function App() {
   return (
-    <HelloProvider>
-      <AppRouter />
-    </HelloProvider>
+    <Routes>
+      <Route path="/" element={<div>Home</div>} />
+      <Route path="/hello" element={<Hello />} />
+    </Routes>
   );
 }
 
