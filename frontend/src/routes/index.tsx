@@ -1,6 +1,6 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom"
 import { userRoutes } from "./user"
-import Hello from "../pages/Hello"
+import Hello from "../features/sandbox/Hello"
 
 export const AppRoutes = () => {
   const router = createBrowserRouter([

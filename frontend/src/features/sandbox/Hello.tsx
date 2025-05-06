@@ -1,5 +1,5 @@
 import React from "react";
-import { useHello } from "../providers/HelloProvider";
+import { useHello } from "../../providers/HelloProvider";
 
 const ApiTest: React.FC = () => {
   const { message } = useHello();
